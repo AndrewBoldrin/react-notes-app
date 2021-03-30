@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 
-export default function NewNotepadButton(props) {
-    
+
+export default function NewNotepadButton(props) {    
     const useStyles = makeStyles((theme) => ({
         new: {
             position: 'absolute',
@@ -17,7 +17,8 @@ export default function NewNotepadButton(props) {
     const classes = useStyles();
   
     function handleNewClick() {
-      props.isNew();
+        props.newNotepad();
+        props.isNew();
     }
 
     return (

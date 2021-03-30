@@ -19,8 +19,9 @@ export default function Home(props) {
   const router = useRouter();
 
   function handleNewClick() {
+    props.newNotepad();
     props.isNew();
-    router.push('/notepad/Notepad');
+    router.push('/Notepad');
   }
 
   return (
@@ -30,9 +31,15 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       </Head>
-      {props.number}
+      {/* {props.number} */}
+      <h1>Pagina inicial</h1>
+      {props.list.length === 0 ? 'vazio' : 
+      'alguma coisa'}
+      {/* {props.list[0].notes} */}
+      {/* <Note /> */}
       <NewNotepadButton 
         isNew={handleNewClick}
+        newNotepad={handleNewClick}
       />      
 
     </div>

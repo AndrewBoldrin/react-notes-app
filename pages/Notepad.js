@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Note from '../../components/Note';
-import NewNotepadButton from '../../components/NewNotepadButton';
+import Note from '../components/Note';
+import NewNotepadButton from '../components/NewNotepadButton';
 
 
 function Notepad(props) {
@@ -27,8 +25,9 @@ function Notepad(props) {
       const classes = useStyles();
 
       function handleNewClick() {
+        props.newNotepad();
         props.isNew();
-        router.push('/notepad/Notepad');
+        router.push('/Notepad');
       }
 
     console.log('notepad', props.number);
@@ -38,6 +37,7 @@ function Notepad(props) {
             <Note />
             <NewNotepadButton 
                 isNew={handleNewClick}
+                newNotepad={handleNewClick}
             />
         </div>
     );

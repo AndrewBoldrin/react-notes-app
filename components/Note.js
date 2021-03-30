@@ -3,7 +3,7 @@
 export default function Note() {
     return (
         <div>
-            Note
+            Note2
         </div>
     );
 }

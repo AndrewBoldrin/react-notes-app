@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SideBar() {
+export default function SideBar(props) {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -49,22 +50,34 @@ export default function SideBar() {
       }
       className={classes.root}
     >
-      <ListItem button>
-        <ListItemIcon>
-          <NoteIcon />
-        </ListItemIcon>
+      {/* {console.log(props.list.length)} */}
+      {
+        (props.list.length > 0) ?
+        props.list.map((item) => {
+          return (
+            <ListItem button>
+              <ListItemIcon>
+                <NoteIcon />
+              </ListItemIcon>
 
-        <ListItemText primary="Sent mail" />
+              <ListItemText primary={item.name} />
 
-        <ListItemIcon>
-          <EditIcon  className={classes.icon}/>
-        </ListItemIcon>
+              <ListItemIcon>
+                <EditIcon  className={classes.icon}/>
+              </ListItemIcon>
 
-        <ListItemIcon>
-          <DeleteIcon className={classes.icon} onClick={() => alert('aqui')} style={{color: red[500]}} />
-        </ListItemIcon>
+              <ListItemIcon>
+                <DeleteIcon className={classes.icon} onClick={() => alert('aqui')} style={{color: red[500]}} />
+              </ListItemIcon>
 
-      </ListItem>
+            </ListItem>
+          );
+        })
+        : 
+        <ListItem>
+            <ListItemText primary="Vazio" />
+        </ListItem>
+      }
     </List>
   );
 }
