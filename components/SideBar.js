@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
 export default function SideBar(props) {
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  function handleClick(event, index) {
+    console.log('clicked index', index);
+    props.changeShowedNotepad(index);
+  }
 
   return (
     <List
@@ -53,9 +53,14 @@ export default function SideBar(props) {
       {/* {console.log(props.list.length)} */}
       {
         (props.list.length > 0) ?
-        props.list.map((item) => {
+        props.list.map((item, index) => {
           return (
-            <ListItem button>
+            <ListItem 
+              key={index}
+              value={index}
+              button
+              onClick={() => handleClick(event, index)}
+              >
               <ListItemIcon>
                 <NoteIcon />
               </ListItemIcon>

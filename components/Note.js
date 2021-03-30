@@ -1,9 +1,9 @@
 
 
-export default function Note() {
+export default function Note(props) {
     return (
         <div>
-            Note2
+            notepad nº: {props.number}
         </div>
     );
 }
