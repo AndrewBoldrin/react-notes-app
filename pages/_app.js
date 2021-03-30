@@ -11,15 +11,13 @@ function MyApp({ Component, pageProps }) {
   const [notepadList, setNotepadList] = useState([
     // defaultNotepad
   ]);
-
+  const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
   const [count, setCount] = useState(0);
 
-  function handleNewNotepad() {
-    setNotepadList([...notepadList, defaultNotepad]);
-  }
-
   function handleNewClick() {
-      setCount((prevCount) => prevCount + 1);
+    setCount((prevCount) => prevCount + 1);
+    setNotepadList([...notepadList, defaultNotepad]);
+    setCurrentNotepadIndex(notepadList.length);
   }
 
   return (
@@ -27,14 +25,13 @@ function MyApp({ Component, pageProps }) {
       <SideBar 
         isNew={handleNewClick}
         list={notepadList}
-        newNotepad={handleNewNotepad}
+        setNewNotepad={handleNewClick}
       />
       <Component 
         {...pageProps}
         number={count}
-        isNew={handleNewClick}
+        setNewNotepad={handleNewClick}
         list={notepadList}
-        newNotepad={handleNewNotepad}
       />
     </Layout>
   );

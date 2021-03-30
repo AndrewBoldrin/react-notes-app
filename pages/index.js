@@ -19,9 +19,7 @@ export default function Home(props) {
   const router = useRouter();
 
   function handleNewClick() {
-    props.newNotepad();
-    props.isNew();
-    router.push('/Notepad');
+    props.setNewNotepad();
   }
 
   return (
@@ -38,8 +36,7 @@ export default function Home(props) {
       {/* {props.list[0].notes} */}
       {/* <Note /> */}
       <NewNotepadButton 
-        isNew={handleNewClick}
-        newNotepad={handleNewClick}
+        setNewNotepad={handleNewClick}
       />      
 
     </div>

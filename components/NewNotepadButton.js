@@ -17,8 +17,8 @@ export default function NewNotepadButton(props) {
     const classes = useStyles();
   
     function handleNewClick() {
-        props.newNotepad();
-        props.isNew();
+        props.setNewNotepad();
+        router.push('../Notepad');
     }
 
     return (

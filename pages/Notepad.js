@@ -25,9 +25,7 @@ function Notepad(props) {
       const classes = useStyles();
 
       function handleNewClick() {
-        props.newNotepad();
-        props.isNew();
-        router.push('/Notepad');
+        props.setNewNotepad();
       }
 
     console.log('notepad', props.number);
@@ -36,8 +34,7 @@ function Notepad(props) {
             notepad nº: {props.number}
             <Note />
             <NewNotepadButton 
-                isNew={handleNewClick}
-                newNotepad={handleNewClick}
+                setNewNotepad={handleNewClick}
             />
         </div>
     );
