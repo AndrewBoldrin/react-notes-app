@@ -2,7 +2,7 @@ import Head from 'next/head'
 // import styles from '../styles/Home.module.css'
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
-import NewNotepadButton from './components/NewNotepadButton';
+import NewNotepadButton from '../components/NewNotepadButton';
 
 export default function Home(props) {
 
@@ -11,9 +11,7 @@ export default function Home(props) {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      // width: '500px',
       minHeight: '100vh',
-      // background: 'red',
     },
   }));
 
@@ -22,7 +20,7 @@ export default function Home(props) {
 
   function handleNewClick() {
     props.isNew();
-    router.push('/components/Notepad');
+    router.push('/notepad/Notepad');
   }
 
   return (
