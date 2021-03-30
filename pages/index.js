@@ -1,19 +1,41 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+// import styles from '../styles/Home.module.css'
+import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
+import NewNotepadButton from './components/NewNotepadButton';
 
-export default function Home() {
+export default function Home(props) {
 
+  const useStyles = makeStyles((theme) => ({
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // width: '500px',
+      minHeight: '100vh',
+      // background: 'red',
+    },
+  }));
+
+  const classes = useStyles();
   const router = useRouter();
 
+  function handleNewClick() {
+    props.isNew();
+    router.push('/components/Notepad');
+  }
+
   return (
-    <div className={styles.container}>
+    <div className={classes.container}>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       </Head>
-
-      <button onClick={() => router.push('/components/Notepad')}>Next</button>
+      {props.number}
+      <NewNotepadButton 
+        isNew={handleNewClick}
+      />      
 
     </div>
   )
