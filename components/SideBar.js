@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -9,6 +9,7 @@ import NoteIcon from '@material-ui/icons/Note';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete'
 import { red } from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,15 +29,31 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1.7rem',
     }
   },
+
+  editField: {
+    width: '200px',
+  },
 }));
 
 export default function SideBar(props) {
 
+  const [edit, setEdit] = useState(-1); // indica o index do item que deve ser editado
+  const [text, setText] = useState();
   const classes = useStyles();
 
-  function handleClick(event, index) {
-    console.log('clicked index', index);
+  function handleClick(index) {
     props.changeShowedNotepad(index);
+  }
+
+  function handleEdit(event, index) {
+    props.editNotepadName(text, index);
+    setEdit(-1);
+    event.preventDefault();
+  }
+
+  function handleDelete(event, index) {
+    props.deleteNotepad(index);
+    event.preventDefault();
   }
 
   return (
@@ -50,7 +67,6 @@ export default function SideBar(props) {
       }
       className={classes.root}
     >
-      {/* {console.log(props.list.length)} */}
       {
         (props.list.length > 0) ?
         props.list.map((item, index) => {
@@ -59,22 +75,39 @@ export default function SideBar(props) {
               key={index}
               value={index}
               button
-              onClick={() => handleClick(event, index)}
+              onClick={() => handleClick(index)}
               >
               <ListItemIcon>
                 <NoteIcon />
               </ListItemIcon>
 
-              <ListItemText primary={item.name} />
+              {
+                edit === index ? 
+                <form 
+                  onSubmit={() => handleEdit(event, index)}
+                  className={classes.editField} 
+                  autoComplete="off"
+                >
+
+                  <TextField id="standard-basic" label="Editing" onChange={() => setText(event.target.value)}/>
+                </form>
+                : <ListItemText primary={item.name} />
+                
+              }
 
               <ListItemIcon>
-                <EditIcon  className={classes.icon}/>
+                <EditIcon button onClick={() => setEdit(index)} className={classes.icon}/>
               </ListItemIcon>
 
-              <ListItemIcon>
-                <DeleteIcon className={classes.icon} onClick={() => alert('aqui')} style={{color: red[500]}} />
-              </ListItemIcon>
-
+              <form 
+                  onSubmit={() => handleDelete(event, index)}
+                  className={classes.editField} 
+                  autoComplete="off"
+              >
+                <ListItemIcon>
+                  <DeleteIcon className={classes.icon} onClick={() => handleDelete(event, index)} style={{color: red[500]}} />
+                </ListItemIcon>
+              </form>
             </ListItem>
           );
         })

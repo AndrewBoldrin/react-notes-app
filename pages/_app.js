@@ -25,6 +25,26 @@ function MyApp({ Component, pageProps }) {
     setCurrentNotepadIndex(index);
   }
 
+  function editNotepadName(text, index) {
+    notepadList.forEach((item) => {
+      if(notepadList.indexOf(item) === index) {
+        item.name = text;
+        return item;
+      }
+      return item;
+    })
+  }
+
+  function deleteNotepad(index) {
+    let newNotepadList = [];
+    notepadList.forEach((item) => {
+      if(notepadList.indexOf(item) !== index) {
+        newNotepadList.push(item);
+      }
+    })
+    setNotepadList(newNotepadList);
+  }
+
   return (
     <Layout>
       <SideBar 
@@ -32,6 +52,8 @@ function MyApp({ Component, pageProps }) {
         list={notepadList}
         setNewNotepad={handleNewClick}
         changeShowedNotepad={changeShowedNotepad}
+        editNotepadName={editNotepadName}
+        deleteNotepad={deleteNotepad}
       />
       <Component 
         {...pageProps}
