@@ -3,9 +3,22 @@ import SideBar from '../components/SideBar';
 import Layout from '../components/layout/Layout';
 import Note from '../components/Note';
 import '../styles/globals.css';
+import React from 'react';
+import Head from 'next/head';
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from '../styles/theme';
 
-function MyApp({ Component, pageProps }) {
+  
+export default function MyApp({ Component, pageProps }) {
+    
 
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
   const [count, setCount] = useState(0);
@@ -46,23 +59,31 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <Layout>
-      <SideBar 
-        isNew={handleNewClick}
-        list={notepadList}
-        setNewNotepad={handleNewClick}
-        changeShowedNotepad={changeShowedNotepad}
-        editNotepadName={editNotepadName}
-        deleteNotepad={deleteNotepad}
-      />
-      <Component 
-        {...pageProps}
-        setNewNotepad={handleNewClick}
-        list={notepadList}
-        notepadIndex={notepadList.length === 0 ? false : currentNotepadIndex}
-      />
-    </Layout>
+    <React.Fragment>
+      <Head>
+        <title>My page</title>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <Layout>
+          <SideBar 
+            isNew={handleNewClick}
+            list={notepadList}
+            setNewNotepad={handleNewClick}
+            changeShowedNotepad={changeShowedNotepad}
+            editNotepadName={editNotepadName}
+            deleteNotepad={deleteNotepad}
+          />
+          <Component 
+            {...pageProps}
+            setNewNotepad={handleNewClick}
+            list={notepadList}
+            notepadIndex={notepadList.length === 0 ? false : currentNotepadIndex}
+            />
+        </Layout>
+      </ThemeProvider>
+    </React.Fragment>
   );
 }
 
-export default MyApp;
+// export default MyApp;

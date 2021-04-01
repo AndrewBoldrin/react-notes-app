@@ -73,7 +73,7 @@ export default function SideBar(props) {
           return (
             <ListItem 
               key={index}
-              value={index}
+              // value={index}
               button
               onClick={() => handleClick(index)}
               >
