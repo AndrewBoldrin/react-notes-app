@@ -30,7 +30,7 @@ export default function MyApp({ Component, pageProps }) {
   function handleNewClick() {
     setCount((prevCount) => prevCount + 1);
     setCurrentNotepadIndex(notepadList.length);
-    let n = {name: 'untitled', notes: [<Note number={count}/>]};
+    let n = {name: 'untitled', notes: [<Note number={count} />]};
     setNotepadList([...notepadList, n]);
   }
 
@@ -79,7 +79,7 @@ export default function MyApp({ Component, pageProps }) {
             setNewNotepad={handleNewClick}
             list={notepadList}
             notepadIndex={notepadList.length === 0 ? false : currentNotepadIndex}
-            />
+          />
         </Layout>
       </ThemeProvider>
     </React.Fragment>

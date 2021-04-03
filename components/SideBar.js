@@ -20,18 +20,25 @@ const useStyles = makeStyles((theme) => ({
     borderRight: '1px solid #ccc',
     backgroundColor: theme.palette.background.paper
   },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
 
   icon: {
+    // marginLeft: '5rem',
+    // background: 'red',
+    // fontSize: '1.5rem',
+    // alignItems: 'center',
+
     '&:hover': {
       fontSize: '1.7rem',
     }
   },
-
+  
   editField: {
-    width: '200px',
+    // background: 'red',
+    // width: '200px',
+    width: 0,
+  
+    padding: 0,
+    margin: 0,
   },
 }));
 
@@ -73,7 +80,6 @@ export default function SideBar(props) {
           return (
             <ListItem 
               key={index}
-              // value={index}
               button
               onClick={() => handleClick(index)}
               >
@@ -85,7 +91,7 @@ export default function SideBar(props) {
                 edit === index ? 
                 <form 
                   onSubmit={() => handleEdit(event, index)}
-                  className={classes.editField} 
+                  // className={classes.editField} 
                   autoComplete="off"
                 >
 
@@ -101,7 +107,7 @@ export default function SideBar(props) {
 
               <form 
                   onSubmit={() => handleDelete(event, index)}
-                  className={classes.editField} 
+                  className={classes.icon} 
                   autoComplete="off"
               >
                 <ListItemIcon>
