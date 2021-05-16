@@ -8,9 +8,7 @@ import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '../styles/theme';
 
-  
 export default function MyApp({ Component, pageProps }) {
-    
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -58,6 +56,29 @@ export default function MyApp({ Component, pageProps }) {
     setNotepadList(newNotepadList);
   }
 
+  function deleteNote(notepadIndex, noteIndex) {
+    if(notepadList[notepadIndex].notes.length > 1) {
+        let newNotesList = [];
+        let newNotepadList = [];
+    
+        notepadList[notepadIndex].notes.forEach((item) => {
+          if(notepadList[notepadIndex].notes.indexOf(item) !== noteIndex) {
+            newNotesList.push(item);
+          }
+        });
+    
+        notepadList.forEach((item) => {
+          if(notepadList.indexOf(item) !== notepadIndex) {
+            newNotepadList.push(item);
+          } else {
+            newNotepadList.push({name: item.name, notes: [...newNotesList]});
+          }
+        })
+    
+        setNotepadList(newNotepadList);
+    }
+  }
+
   return (
     <React.Fragment>
       <Head>
@@ -79,6 +100,7 @@ export default function MyApp({ Component, pageProps }) {
             setNewNotepad={handleNewClick}
             list={notepadList}
             notepadIndex={notepadList.length === 0 ? false : currentNotepadIndex}
+            deleteNote={deleteNote}
           />
         </Layout>
       </ThemeProvider>

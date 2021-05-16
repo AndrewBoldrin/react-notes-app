@@ -83,7 +83,10 @@ export default function Note(props) {
         setIsDown(true);
         setComponentOffSetLeft(event.clientX - offsetLeft);
         setComponentOffSetTop(event.clientY - offsetTop);
-        console.log('click do mouse');
+    }
+
+    function handleCloseNote() {
+        props.deleteNote(props.notepadIndex, props.index);
     }
         
     return (
@@ -97,10 +100,9 @@ export default function Note(props) {
                         Note {props.number}
                     </Typography>
                     <AddIcon className={classes.icon}/>
-                    <CloseIcon className={classes.icon} />
+                    <CloseIcon onClick={handleCloseNote} className={classes.icon} />
                 </Toolbar>
             </AppBar>
-
             <CardActionArea>
                 <CardContent>
                     {/* <Typography gutterBottom variant="h5" component="h2">
