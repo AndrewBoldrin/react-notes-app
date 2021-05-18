@@ -61,6 +61,10 @@ export default function Note(props) {
         };
     }, [isDown]);
 
+    function handleAddNewNote() {
+        props.addNewNote();
+    }
+
     const mousemove = (e) => {
         if(isDown) {
             let posX = e.clientX;
@@ -97,9 +101,9 @@ export default function Note(props) {
                         <MenuIcon />
                     </IconButton> */}
                     <Typography variant="h6" color="inherit">
-                        Note {props.number}
+                        Note {props.notepadName()}
                     </Typography>
-                    <AddIcon className={classes.icon}/>
+                    <AddIcon onClick={handleAddNewNote} className={classes.icon}/>
                     <CloseIcon onClick={handleCloseNote} className={classes.icon} />
                 </Toolbar>
             </AppBar>

@@ -50,6 +50,7 @@ export default function SideBar(props) {
 
   function handleClick(index) {
     props.changeShowedNotepad(index);
+    
   }
 
   function handleEdit(event, index) {
@@ -75,8 +76,8 @@ export default function SideBar(props) {
       className={classes.root}
     >
       {
-        (props.list.length > 0) ?
-        props.list.map((item, index) => {
+        (props.notepadList.length > 0) ?
+        props.notepadList.map((item, index) => {
           return (
             <ListItem 
               key={index}

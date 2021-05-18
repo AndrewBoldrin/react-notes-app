@@ -17,7 +17,7 @@ export default function Home(props) {
 
   const classes = useStyles();
 
-  function handleNewClick() {
+  function setNewNotepad() {
     props.setNewNotepad(props.number);
   }
 
@@ -29,11 +29,11 @@ export default function Home(props) {
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       </Head>
       <h1>Pagina inicial</h1>
-      {props.list.length === 0 ? 'vazio' : 
+      {props.notepadList?.length === 0 ? 'vazio' : 
       'note'}
 
       <NewNotepadButton 
-        setNewNotepad={handleNewClick}
+        setNewNotepad={setNewNotepad}
       />      
 
     </div>

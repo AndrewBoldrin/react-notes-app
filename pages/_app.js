@@ -20,16 +20,22 @@ export default function MyApp({ Component, pageProps }) {
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
   const [count, setCount] = useState(0);
-  const defaultNotepad = {name: 'untitled', notes: [<Note />]};
+  const defaultNote = <Note />;
+  // const defaultNotepad = {name: 'untitled', notes: [defaultNote]};
   const [notepadList, setNotepadList] = useState([
     // defaultNotepad
   ]);
+
+  function addNewNote(notepadIndex) {
+    notepadList[notepadIndex].notes.push(defaultNote);
+    console.log('clicando em adicionar novo note', notepadList[notepadIndex]);
+  }
   
-  function handleNewClick() {
+  function createNewNotepad() {
     setCount((prevCount) => prevCount + 1);
-    setCurrentNotepadIndex(notepadList.length);
     let n = {name: 'untitled', notes: [<Note number={count} />]};
     setNotepadList([...notepadList, n]);
+    setCurrentNotepadIndex(notepadList.length);
   }
 
   function changeShowedNotepad(index) {
@@ -88,19 +94,19 @@ export default function MyApp({ Component, pageProps }) {
       <ThemeProvider theme={theme}>
         <Layout>
           <SideBar 
-            isNew={handleNewClick}
-            list={notepadList}
-            setNewNotepad={handleNewClick}
+            // isNew={handleNewClick}
+            notepadList={notepadList}
+            setNewNotepad={createNewNotepad}
             changeShowedNotepad={changeShowedNotepad}
             editNotepadName={editNotepadName}
             deleteNotepad={deleteNotepad}
           />
           <Component 
             {...pageProps}
-            setNewNotepad={handleNewClick}
-            list={notepadList}
-            notepadIndex={notepadList.length === 0 ? false : currentNotepadIndex}
+            setNewNotepad={createNewNotepad}
+            notepadList={notepadList[currentNotepadIndex]}
             deleteNote={deleteNote}
+            addNewNote={addNewNote}
           />
         </Layout>
       </ThemeProvider>
