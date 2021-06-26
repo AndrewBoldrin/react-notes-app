@@ -19,69 +19,92 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  const [count, setCount] = useState(0);
-  const defaultNote = <Note />;
-  // const defaultNotepad = {name: 'untitled', notes: [defaultNote]};
-  const [notepadList, setNotepadList] = useState([
-    // defaultNotepad
-  ]);
+  // const [count, setCount] = useState(0);
+  const defaultNote = {text: '', x: 600, y: 300, colour: 'blue'};
+  const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
+  const [notepadList, setNotepadList] = useState([  ]);
 
-  function addNewNote(notepadIndex) {
-    notepadList[notepadIndex].notes.push(defaultNote);
-    console.log('clicando em adicionar novo note', notepadList[notepadIndex]);
-  }
-  
-  function createNewNotepad() {
-    setCount((prevCount) => prevCount + 1);
-    let n = {name: 'untitled', notes: [<Note number={count} />]};
-    setNotepadList([...notepadList, n]);
-    setCurrentNotepadIndex(notepadList.length);
-  }
-
-  function changeShowedNotepad(index) {
-    setCurrentNotepadIndex(index);
-  }
-
-  function editNotepadName(text, index) {
-    notepadList.forEach((item) => {
-      if(notepadList.indexOf(item) === index) {
-        item.name = text;
-        return item;
+  function updateNotePosition(noteIndex, posX, posY) {
+    let updatedNoteList = notepadList[currentNotepadIndex].notes.map((item, index) => {
+      if(noteIndex == index) {
+        item.x = posX;
+        item.y = posY;
       }
       return item;
-    })
+    });
+    return updatedNoteList;
   }
 
-  function deleteNotepad(index) {
-    let newNotepadList = [];
-    notepadList.forEach((item) => {
-      if(notepadList.indexOf(item) !== index) {
-        newNotepadList.push(item);
+  function updateNotepadList(updatedNoteList) {
+    let updatedNotepadList = notepadList.map((item, index) => {
+      if(index == currentNotepadIndex) {
+        let changedNotepad = {name: item.name, notes: updatedNoteList};
+        return changedNotepad;
       }
+      return item;
+    });
+    return updatedNotepadList;
+  }
+
+  function handleNoteMove(noteIndex, posX, posY) {
+    let updatedNoteList = updateNotePosition(noteIndex, posX, posY);
+    let updatedNotepadList = updateNotepadList(updatedNoteList);
+
+    setNotepadList(updatedNotepadList);
+  }
+
+  function onAddNote() {
+    let newNotepadList = notepadList.map((item, index) => {
+      if(index == currentNotepadIndex) 
+        item.notes.push(defaultNote);
+      return item;
     })
     setNotepadList(newNotepadList);
   }
+  
+  function onNewNotepad() {
+    setNotepadList([...notepadList, defaultNotepad]);
+    setCurrentNotepadIndex(notepadList.length);
+  }
 
-  function deleteNote(notepadIndex, noteIndex) {
-    if(notepadList[notepadIndex].notes.length > 1) {
-        let newNotesList = [];
-        let newNotepadList = [];
-    
-        notepadList[notepadIndex].notes.forEach((item) => {
-          if(notepadList[notepadIndex].notes.indexOf(item) !== noteIndex) {
-            newNotesList.push(item);
-          }
-        });
-    
-        notepadList.forEach((item) => {
-          if(notepadList.indexOf(item) !== notepadIndex) {
-            newNotepadList.push(item);
-          } else {
-            newNotepadList.push({name: item.name, notes: [...newNotesList]});
-          }
-        })
-    
-        setNotepadList(newNotepadList);
+  function changeActiveNotepad(index) {
+    setCurrentNotepadIndex(index);
+  }
+
+  function onEditNotepadName(text, notepadIndex) {
+    let newNotepadList = notepadList.map((item, index) => {
+      if(index == notepadIndex) {
+        item.name = text;
+      }
+      return item;
+    });
+    setNotepadList(newNotepadList);
+  }
+
+  function onDeleteNotepad(notepadIndex) {
+    let newNotepadList = notepadList.filter((item, index) => {
+      if(index !== notepadIndex) 
+        return item;
+    });
+    setNotepadList(newNotepadList);
+  }
+
+  // removing note from notes list and returning a new note list
+  function removeNote(noteIndex) {
+    let newNotesList = notepadList[currentNotepadIndex].notes.filter((item, index) => {
+      if(index !== noteIndex) {
+        return item;
+      }
+    });
+    return newNotesList;
+  }
+  
+  // only close a note if there is more than one note in the note list
+  function onCloseNote(noteIndex) {
+    if(notepadList[currentNotepadIndex].notes.length > 1) {
+      let newNotesList = removeNote(noteIndex);
+      let newNotepadList = updateNotepadList(newNotesList);
+      setNotepadList(newNotepadList);
     }
   }
 
@@ -94,19 +117,18 @@ export default function MyApp({ Component, pageProps }) {
       <ThemeProvider theme={theme}>
         <Layout>
           <SideBar 
-            // isNew={handleNewClick}
             notepadList={notepadList}
-            setNewNotepad={createNewNotepad}
-            changeShowedNotepad={changeShowedNotepad}
-            editNotepadName={editNotepadName}
-            deleteNotepad={deleteNotepad}
+            changeActiveNotepad={changeActiveNotepad}
+            onEditNotepadName={onEditNotepadName}
+            onDeleteNotepad={onDeleteNotepad}
           />
           <Component 
             {...pageProps}
-            setNewNotepad={createNewNotepad}
             notepadList={notepadList[currentNotepadIndex]}
-            deleteNote={deleteNote}
-            addNewNote={addNewNote}
+            onNewNotepad={onNewNotepad}
+            noteMove={handleNoteMove}
+            onAddNote={onAddNote}
+            onCloseNote={onCloseNote}
           />
         </Layout>
       </ThemeProvider>

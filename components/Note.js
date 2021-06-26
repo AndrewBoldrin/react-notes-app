@@ -40,30 +40,30 @@ const useStyles = makeStyles({
     },
   });
 
-export default function Note(props) {
+export default function Note({ 
+    note, 
+    noteIndex, 
+    notepadName, 
+    noteMove,
+    onAddNote,
+    onCloseNote
+}) {
 
     const [isDown, setIsDown] = useState(false);
     const [componentOffSetLeft, setComponentOffSetLeft] = useState();
     const [componentOffSetTop, setComponentOffSetTop] = useState();
-    const [newX, setNewX] = useState(500);
-    const [newY, setNewY] = useState(500);
     const noteRef = useRef(null);
     const classes = useStyles();
  
     useEffect(() => {
-        
         document.addEventListener('mousemove', mousemove);
         document.addEventListener('mouseup', mouseup);
-        
+
         return () => {
             document.removeEventListener('mousemove', mousemove);
             document.removeEventListener('mouseup', mousemove);
         };
     }, [isDown]);
-
-    function handleAddNewNote() {
-        props.addNewNote();
-    }
 
     const mousemove = (e) => {
         if(isDown) {
@@ -72,8 +72,7 @@ export default function Note(props) {
             let newPosX = posX - componentOffSetLeft;
             let newPosY = posY - componentOffSetTop;
 
-            setNewX(newPosX);
-            setNewY(newPosY);
+            noteMove(noteIndex, newPosX, newPosY);
         }
     }
         
@@ -82,29 +81,25 @@ export default function Note(props) {
     }
         
     function handleMouseDown(event) {
-        // distancia da esquerda e do topo do click do mouse no componente note
+        // gap between mouse and note
         const { offsetLeft, offsetTop } = noteRef.current;
         setIsDown(true);
         setComponentOffSetLeft(event.clientX - offsetLeft);
         setComponentOffSetTop(event.clientY - offsetTop);
     }
-
-    function handleCloseNote() {
-        props.deleteNote(props.notepadIndex, props.index);
-    }
         
     return (
-        <Card ref={noteRef} className={classes.card} style={{position: 'absolute', left: newX + 'px', top: newY + 'px'}}>
+        <Card ref={noteRef} className={classes.card} style={{position: 'absolute', left: note.x + 'px', top: note.y + 'px'}}>
             <AppBar onMouseDown={() => handleMouseDown(event)} position="static">
                 <Toolbar variant="dense">
                     {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                         <MenuIcon />
                     </IconButton> */}
                     <Typography variant="h6" color="inherit">
-                        Note {props.notepadName()}
+                        Note {notepadName()}
                     </Typography>
-                    <AddIcon onClick={handleAddNewNote} className={classes.icon}/>
-                    <CloseIcon onClick={handleCloseNote} className={classes.icon} />
+                    <AddIcon onClick={onAddNote} className={classes.icon}/>
+                    <CloseIcon onClick={ () => onCloseNote(noteIndex)} className={classes.icon} />
                 </Toolbar>
             </AppBar>
             <CardActionArea>

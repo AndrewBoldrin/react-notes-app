@@ -19,21 +19,15 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function Notepad({notepadList, setNewNotepad, deleteNote, addNewNote}) {
+function Notepad({ 
+  noteMove,
+  notepadList, 
+  onNewNotepad, 
+  onCloseNote, 
+  onAddNote 
+}) {
       
   const classes = useStyles();
-
-  function handleAddNewNote() {
-    addNewNote();
-  }
-
-  function handleNewNotepad() {
-    setNewNotepad();
-  }
-
-  function handleDeleteNote(noteIndex) {
-    deleteNote(noteIndex);
-  }
 
   function getNotepadName() {
     return notepadList.name;
@@ -42,22 +36,23 @@ function Notepad({notepadList, setNewNotepad, deleteNote, addNewNote}) {
   return(
     <div className={classes.container} >
         {
-          notepadList?.notes.length === 0 ? 'Nenhum existe nenhum notepad' : 
-          notepadList?.notes.map((note, index) => {
+          notepadList?.notes?.length === 0 ? 'Nenhum existe nenhum notepad' : 
+          notepadList?.notes?.map((note, index) => {
             return (
-              <div key={note.id}>
-                <Note 
-                  index={index} 
-                  deleteNote={handleDeleteNote}
-                  addNewNote={handleAddNewNote}
-                  notepadName={getNotepadName}
-                />
-              </div>
+              <Note
+                key={index}
+                note={note}
+                noteIndex={index} 
+                notepadName={getNotepadName}
+                noteMove={noteMove}
+                onAddNote={onAddNote}
+                onCloseNote={onCloseNote}
+              />
             );
           })
         }
         <NewNotepadButton 
-            setNewNotepad={handleNewNotepad}
+            onNewNotepad={onNewNotepad}
         />
     </div>
   );

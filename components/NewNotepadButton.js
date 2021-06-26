@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 
 
-export default function NewNotepadButton(props) {    
+export default function NewNotepadButton({ onNewNotepad }) {    
     const useStyles = makeStyles((theme) => ({
         new: {
             position: 'absolute',
@@ -16,13 +16,13 @@ export default function NewNotepadButton(props) {
     const router = useRouter();
     const classes = useStyles();
   
-    function handleNewClick() {
-        props.setNewNotepad();
+    function handleNewNotepad() {
+        onNewNotepad();
         router.push('../Notepad');
     }
 
     return (
-        <Fab onClick={handleNewClick} className={classes.new} color="primary" aria-label="add">
+        <Fab onClick={handleNewNotepad} className={classes.new} color="primary" aria-label="add">
             <AddIcon />
         </Fab>
     );

@@ -42,25 +42,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SideBar(props) {
+export default function SideBar({ 
+ notepadList, changeActiveNotepad, onEditNotepadName, onDeleteNotepad
+}) {
 
-  const [edit, setEdit] = useState(-1); // indica o index do item que deve ser editado
+  const [edit, setEdit] = useState(-1);
   const [text, setText] = useState();
   const classes = useStyles();
 
-  function handleClick(index) {
-    props.changeShowedNotepad(index);
-    
-  }
-
-  function handleEdit(event, index) {
-    props.editNotepadName(text, index);
+  function handleEditNotepad(event, index) {
+    onEditNotepadName(text, index);
     setEdit(-1);
     event.preventDefault();
   }
 
-  function handleDelete(event, index) {
-    props.deleteNotepad(index);
+  function handleDeleteNotepad(event, index) {
+    onDeleteNotepad(index);
     event.preventDefault();
   }
 
@@ -69,20 +66,18 @@ export default function SideBar(props) {
       component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Notepads
-        </ListSubheader>
+        <ListSubheader component="div" id="nested-list-subheader">Notepads</ListSubheader>
       }
       className={classes.root}
     >
       {
-        (props.notepadList.length > 0) ?
-        props.notepadList.map((item, index) => {
+        (notepadList.length > 0) ?
+        notepadList.map((item, index) => {
           return (
             <ListItem 
               key={index}
               button
-              onClick={() => handleClick(index)}
+              onClick={() => changeActiveNotepad(index)}
               >
               <ListItemIcon>
                 <NoteIcon />
@@ -91,8 +86,7 @@ export default function SideBar(props) {
               {
                 edit === index ? 
                 <form 
-                  onSubmit={() => handleEdit(event, index)}
-                  // className={classes.editField} 
+                  onSubmit={() => handleEditNotepad(event, index)}
                   autoComplete="off"
                 >
 
@@ -103,16 +97,16 @@ export default function SideBar(props) {
               }
 
               <ListItemIcon>
-                <EditIcon button onClick={() => setEdit(index)} className={classes.icon}/>
+                <EditIcon  onClick={() => setEdit(index)} className={classes.icon}/>
               </ListItemIcon>
 
-              <form 
-                  onSubmit={() => handleDelete(event, index)}
-                  className={classes.icon} 
-                  autoComplete="off"
-              >
+              <form className={classes.icon} autoComplete="off">
                 <ListItemIcon>
-                  <DeleteIcon className={classes.icon} onClick={() => handleDelete(event, index)} style={{color: red[500]}} />
+                  <DeleteIcon 
+                    className={classes.icon} 
+                    onClick={() => handleDeleteNotepad(event, index)} 
+                    style={{color: red[500]}} 
+                  />
                 </ListItemIcon>
               </form>
             </ListItem>

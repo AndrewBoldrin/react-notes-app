@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
 import NewNotepadButton from '../components/NewNotepadButton';
 
-export default function Home(props) {
+export default function Home({ notepadList, onNewNotepad }) {
 
   const useStyles = makeStyles((theme) => ({
     container: {
@@ -17,10 +17,6 @@ export default function Home(props) {
 
   const classes = useStyles();
 
-  function setNewNotepad() {
-    props.setNewNotepad(props.number);
-  }
-
   return (
     <div className={classes.container}>
       <Head>
@@ -29,11 +25,11 @@ export default function Home(props) {
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       </Head>
       <h1>Pagina inicial</h1>
-      {props.notepadList?.length === 0 ? 'vazio' : 
+      { notepadList?.length === 0 ? 'vazio' : 
       'note'}
 
       <NewNotepadButton 
-        setNewNotepad={setNewNotepad}
+        onNewNotepad={onNewNotepad}
       />      
 
     </div>
