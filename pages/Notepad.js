@@ -1,5 +1,3 @@
-import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Note from '../components/Note';
 import NewNotepadButton from '../components/NewNotepadButton';

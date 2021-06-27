@@ -10,6 +10,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete'
 import { red } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,30 +21,14 @@ const useStyles = makeStyles((theme) => ({
     borderRight: '1px solid #ccc',
     backgroundColor: theme.palette.background.paper
   },
-
-  icon: {
-    // marginLeft: '5rem',
-    // background: 'red',
-    // fontSize: '1.5rem',
-    // alignItems: 'center',
-
-    '&:hover': {
-      fontSize: '1.7rem',
-    }
-  },
-  
-  editField: {
-    // background: 'red',
-    // width: '200px',
-    width: 0,
-  
-    padding: 0,
-    margin: 0,
-  },
 }));
 
 export default function SideBar({ 
- notepadList, changeActiveNotepad, onEditNotepadName, onDeleteNotepad
+ notepadList, 
+ changeActiveNotepad, 
+ onEditNotepadName, 
+ onDeleteNotepad,
+ currentNotepadIndex
 }) {
 
   const [edit, setEdit] = useState(-1);
@@ -61,6 +46,15 @@ export default function SideBar({
     event.preventDefault();
   }
 
+  function handleEditClick(index) {
+    if(edit == -1) 
+      setEdit(index);
+    else if(edit == index)
+      setEdit(-1);
+    else 
+      setEdit(index);
+  }
+
   return (
     <List
       component="nav"
@@ -76,6 +70,7 @@ export default function SideBar({
           return (
             <ListItem 
               key={index}
+              selected={currentNotepadIndex == index}
               button
               onClick={() => changeActiveNotepad(index)}
               >
@@ -90,25 +85,25 @@ export default function SideBar({
                   autoComplete="off"
                 >
 
-                  <TextField id="standard-basic" label="Editing" onChange={() => setText(event.target.value)}/>
+                  <TextField id="standard-basic" defaultValue={item.name} onChange={() => setText(event.target.value)} autoFocus/>
                 </form>
                 : <ListItemText primary={item.name} />
                 
               }
 
-              <ListItemIcon>
-                <EditIcon  onClick={() => setEdit(index)} className={classes.icon}/>
-              </ListItemIcon>
+              <IconButton aria-label="edit"
+                onClick={() => handleEditClick(index)} 
+              >
+                <EditIcon />
+              </IconButton>
 
-              <form className={classes.icon} autoComplete="off">
-                <ListItemIcon>
-                  <DeleteIcon 
-                    className={classes.icon} 
-                    onClick={() => handleDeleteNotepad(event, index)} 
-                    style={{color: red[500]}} 
-                  />
-                </ListItemIcon>
-              </form>
+              <IconButton 
+                edge="end" 
+                aria-label="delete"
+                onClick={() => handleDeleteNotepad(event, index)} 
+              >
+                <DeleteIcon style={ {color: red[500]} } />
+              </IconButton>
             </ListItem>
           );
         })

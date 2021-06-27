@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import SideBar from '../components/SideBar';
 import Layout from '../components/layout/Layout';
-import Note from '../components/Note';
 import '../styles/globals.css';
 import React from 'react';
 import Head from 'next/head';
@@ -19,7 +18,6 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  // const [count, setCount] = useState(0);
   const defaultNote = {text: '', x: 600, y: 300, colour: 'blue'};
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
   const [notepadList, setNotepadList] = useState([  ]);
@@ -118,6 +116,7 @@ export default function MyApp({ Component, pageProps }) {
         <Layout>
           <SideBar 
             notepadList={notepadList}
+            currentNotepadIndex={currentNotepadIndex}
             changeActiveNotepad={changeActiveNotepad}
             onEditNotepadName={onEditNotepadName}
             onDeleteNotepad={onDeleteNotepad}
