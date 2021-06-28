@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import NoteIcon from '@material-ui/icons/Note';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete'
 import { red } from '@material-ui/core/colors';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
+import { 
+  ListSubheader,
+  List,
+  ListItem,
+  TextField,
+  ListItemText,
+  ListItemIcon,
+  IconButton,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,7 +87,12 @@ export default function SideBar({
                   autoComplete="off"
                 >
 
-                  <TextField id="standard-basic" defaultValue={item.name} onChange={() => setText(event.target.value)} autoFocus/>
+                  <TextField 
+                    id="standard-basic" 
+                    defaultValue={item.name} 
+                    onChange={() => setText(event.target.value)} 
+                    autoFocus
+                  />
                 </form>
                 : <ListItemText primary={item.name} />
                 

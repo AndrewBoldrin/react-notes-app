@@ -22,7 +22,8 @@ function Notepad({
   notepadList, 
   onNewNotepad, 
   onCloseNote, 
-  onAddNote 
+  onAddNote ,
+  onRenameNote
 }) {
       
   const classes = useStyles();
@@ -45,6 +46,7 @@ function Notepad({
                 noteMove={noteMove}
                 onAddNote={onAddNote}
                 onCloseNote={onCloseNote}
+                onRenameNote={onRenameNote}
               />
             );
           })

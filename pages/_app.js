@@ -18,7 +18,7 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  const defaultNote = {text: '', x: 600, y: 300, colour: 'blue'};
+  const defaultNote = {name: 'Note', text: '', x: 600, y: 300, colour: 'blue'};
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
   const [notepadList, setNotepadList] = useState([  ]);
 
@@ -51,24 +51,16 @@ export default function MyApp({ Component, pageProps }) {
     setNotepadList(updatedNotepadList);
   }
 
-  function onAddNote() {
-    let newNotepadList = notepadList.map((item, index) => {
-      if(index == currentNotepadIndex) 
-        item.notes.push(defaultNote);
-      return item;
-    })
-    setNotepadList(newNotepadList);
-  }
   
   function onNewNotepad() {
     setNotepadList([...notepadList, defaultNotepad]);
     setCurrentNotepadIndex(notepadList.length);
   }
-
+  
   function changeActiveNotepad(index) {
     setCurrentNotepadIndex(index);
   }
-
+  
   function onEditNotepadName(text, notepadIndex) {
     let newNotepadList = notepadList.map((item, index) => {
       if(index == notepadIndex) {
@@ -78,15 +70,31 @@ export default function MyApp({ Component, pageProps }) {
     });
     setNotepadList(newNotepadList);
   }
-
+  
   function onDeleteNotepad(notepadIndex) {
     let newNotepadList = notepadList.filter((item, index) => {
       if(index !== notepadIndex) 
-        return item;
+      return item;
     });
     setNotepadList(newNotepadList);
   }
+  
+  // return list of notes with the renamed note
+  function renameNote(noteIndex, newName) {
+    let newNotes = notepadList[currentNotepadIndex].notes.map((note, index) => {
+      if(index == noteIndex)
+        note.name = newName;
+      return note;
+    });
+    return newNotes;
+  }
 
+  function onRenameNote(noteIndex, newName) {
+    let newNotes = renameNote(noteIndex, newName);
+    let newNotepadList = updateNotepadList(newNotes);
+    setNotepadList(newNotepadList);
+  }
+  
   // removing note from notes list and returning a new note list
   function removeNote(noteIndex) {
     let newNotesList = notepadList[currentNotepadIndex].notes.filter((item, index) => {
@@ -95,6 +103,15 @@ export default function MyApp({ Component, pageProps }) {
       }
     });
     return newNotesList;
+  }
+
+  function onAddNote() {
+    let newNotepadList = notepadList.map((item, index) => {
+      if(index == currentNotepadIndex) 
+        item.notes.push(defaultNote);
+      return item;
+    })
+    setNotepadList(newNotepadList);
   }
   
   // only close a note if there is more than one note in the note list
@@ -128,6 +145,7 @@ export default function MyApp({ Component, pageProps }) {
             noteMove={handleNoteMove}
             onAddNote={onAddNote}
             onCloseNote={onCloseNote}
+            onRenameNote={onRenameNote}
           />
         </Layout>
       </ThemeProvider>

@@ -1,14 +1,21 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
+import PaletteIcon from '@material-ui/icons/Palette';
+import { 
+    Card, 
+    CardActionArea, 
+    CardContent, 
+    ListItem, 
+    ButtonGroup,
+    AppBar,
+    TextareaAutosize,
+    ListItemText,
+    TextField,
+    IconButton
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
     card: {
@@ -20,7 +27,6 @@ const useStyles = makeStyles({
     media: {
       height: 140,
     },
-
     textArea: {
         minWidth: 300,
         maxWidth: 900,
@@ -32,11 +38,11 @@ const useStyles = makeStyles({
             outline: 'none',
         }
     },
-
+    input: {
+        color: 'white',
+    },
     icon : {
-        '&:hover': {
-            fontSize: '1.7rem'
-        }
+        color: 'white',
     },
   });
 
@@ -46,12 +52,15 @@ export default function Note({
     notepadName, 
     noteMove,
     onAddNote,
-    onCloseNote
+    onCloseNote,
+    onRenameNote
 }) {
 
     const [isDown, setIsDown] = useState(false);
     const [componentOffSetLeft, setComponentOffSetLeft] = useState();
     const [componentOffSetTop, setComponentOffSetTop] = useState();
+    const [isEditing, setIsEditing] = useState(false);
+    const [newName, setNewName] = useState();
     const noteRef = useRef(null);
     const classes = useStyles();
  
@@ -87,34 +96,73 @@ export default function Note({
         setComponentOffSetLeft(event.clientX - offsetLeft);
         setComponentOffSetTop(event.clientY - offsetTop);
     }
+
+    function handleEditClick() {
+        setIsEditing(!isEditing);
+    }
+
+    function handleEdit(event) {
+        onRenameNote(noteIndex, newName);
+        setIsEditing(false);
+        event.preventDefault();
+    }
         
     return (
         <Card ref={noteRef} className={classes.card} style={{position: 'absolute', left: note.x + 'px', top: note.y + 'px'}}>
             <AppBar onMouseDown={() => handleMouseDown(event)} position="static">
-                <Toolbar variant="dense">
-                    {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton> */}
-                    <Typography variant="h6" color="inherit">
-                        Note {notepadName()}
-                    </Typography>
-                    <AddIcon onClick={onAddNote} className={classes.icon}/>
-                    <CloseIcon onClick={ () => onCloseNote(noteIndex)} className={classes.icon} />
-                </Toolbar>
+                <ListItem
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                    { 
+                        isEditing ?
+                        <form 
+                            onSubmit={(event) => handleEdit(event)}
+                            autoComplete="off"
+                            >
+                            <TextField 
+                                id="standard-basic" 
+                                style={{ maxWidth: 150 }}
+                                defaultValue={note.name}
+                                className={classes.editField}
+                                InputProps={{ className: classes.input }}
+                                onChange={() => setNewName(event.target.value)} 
+                                autoFocus
+                            />
+                        </form> 
+                        :
+                        <ListItemText >{note.name}</ListItemText>
+                    }
+                    <ButtonGroup>
+                        <IconButton edge="end" aria-label="edit">
+                            <PaletteIcon className={classes.icon} />
+                        </IconButton>
+                        <IconButton 
+                            onClick={ () => handleEditClick() }
+                            aria-label="edit"
+                            edge="end"
+                        >
+                            <EditIcon className={classes.icon} />
+                        </IconButton>
+                        <IconButton 
+                            onClick={ onAddNote } 
+                            edge="end" 
+                        >
+                            <AddIcon  className={classes.icon}/>
+                        </IconButton>
+                        <IconButton 
+                            onClick={ () => onCloseNote(noteIndex) } 
+                            edge="end" 
+                        >
+                            <CloseIcon className={classes.icon} />
+                        </IconButton>
+                    </ButtonGroup>
+                </ListItem>
             </AppBar>
             <CardActionArea>
                 <CardContent>
-                    {/* <Typography gutterBottom variant="h5" component="h2">
-                        Lizard
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                        across all continents except Antarctica
-                    </Typography> */}
                     <TextareaAutosize className={classes.textArea} aria-label="empty textarea" placeholder="Empty" />;
                 </CardContent>
             </CardActionArea>
-
         </Card>
     );
 }
