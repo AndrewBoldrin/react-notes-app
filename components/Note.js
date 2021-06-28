@@ -4,6 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import PaletteIcon from '@material-ui/icons/Palette';
+import Brightness1Icon from '@material-ui/icons/Brightness1';
 import { 
     Card, 
     CardActionArea, 
@@ -14,7 +15,9 @@ import {
     TextareaAutosize,
     ListItemText,
     TextField,
-    IconButton
+    IconButton,
+    Paper,
+    Popper,
 } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -33,6 +36,7 @@ const useStyles = makeStyles({
         minHeight: 300,
         maxHeight: 900,
         border: 'none',
+        fontSize: 16,
 
         '&:focus': {
             outline: 'none',
@@ -44,16 +48,22 @@ const useStyles = makeStyles({
     icon : {
         color: 'white',
     },
+    paperContainer: {
+        display: 'flex', 
+        minWidth: 150, 
+        maxWidth: 150,
+        flexWrap: 'wrap'
+    },
   });
 
 export default function Note({ 
     note, 
     noteIndex, 
-    notepadName, 
     noteMove,
     onAddNote,
     onCloseNote,
-    onRenameNote
+    onRenameNote,
+    onChangeNoteColor
 }) {
 
     const [isDown, setIsDown] = useState(false);
@@ -61,8 +71,12 @@ export default function Note({
     const [componentOffSetTop, setComponentOffSetTop] = useState();
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState();
+    const [togglePalette, setTogglePalette] = useState(null);
     const noteRef = useRef(null);
     const classes = useStyles();
+
+    const open = Boolean(togglePalette);
+    const paletteColors = ['pink', 'purple', 'red', 'brown', 'green', 'blue'];
  
     useEffect(() => {
         document.addEventListener('mousemove', mousemove);
@@ -106,15 +120,27 @@ export default function Note({
         setIsEditing(false);
         event.preventDefault();
     }
-        
+    
+    function handleTogglePalette(event) {
+        setTogglePalette(togglePalette ? null : event.currentTarget);
+    }
+
+    function handleChangeNoteColor(newColor) {
+        onChangeNoteColor(noteIndex, newColor);
+        setTogglePalette(null);
+    }
+
     return (
         <Card ref={noteRef} className={classes.card} style={{position: 'absolute', left: note.x + 'px', top: note.y + 'px'}}>
-            <AppBar onMouseDown={() => handleMouseDown(event)} position="static">
+            <AppBar 
+                onMouseDown={() => handleMouseDown(event)} 
+                position="static"
+                style={{ backgroundColor: note.color }}
+            >
                 <ListItem
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                    { 
-                        isEditing ?
+                    { isEditing ?
                         <form 
                             onSubmit={(event) => handleEdit(event)}
                             autoComplete="off"
@@ -133,9 +159,34 @@ export default function Note({
                         <ListItemText >{note.name}</ListItemText>
                     }
                     <ButtonGroup>
-                        <IconButton edge="end" aria-label="edit">
+                        <IconButton 
+                            edge="end" 
+                            aria-label="edit" 
+                            onClick={ (event) => handleTogglePalette(event)}
+                        >
                             <PaletteIcon className={classes.icon} />
                         </IconButton>
+
+                        <Popper 
+                            open={open} 
+                            anchorEl={togglePalette}
+                            placement="top"
+                        >
+                            <Paper className={classes.paperContainer }>
+                                { paletteColors.map((color) => {
+                                    return (
+                                        <IconButton 
+                                            key={ color.toString() } 
+                                            value={ color }
+                                            onClick={ () => handleChangeNoteColor(color) }
+                                        >
+                                            <Brightness1Icon style={{ color: color }}/>
+                                        </IconButton>
+                                    );
+                                })}
+                            </Paper>
+                        </Popper>
+
                         <IconButton 
                             onClick={ () => handleEditClick() }
                             aria-label="edit"
@@ -160,7 +211,11 @@ export default function Note({
             </AppBar>
             <CardActionArea>
                 <CardContent>
-                    <TextareaAutosize className={classes.textArea} aria-label="empty textarea" placeholder="Empty" />;
+                    <TextareaAutosize 
+                        className={classes.textArea} 
+                        aria-label="empty textarea" 
+                        placeholder="Empty" 
+                    />;
                 </CardContent>
             </CardActionArea>
         </Card>

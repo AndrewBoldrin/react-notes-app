@@ -23,14 +23,11 @@ function Notepad({
   onNewNotepad, 
   onCloseNote, 
   onAddNote ,
-  onRenameNote
+  onRenameNote,
+  onChangeNoteColor
 }) {
       
   const classes = useStyles();
-
-  function getNotepadName() {
-    return notepadList.name;
-  }
 
   return(
     <div className={classes.container} >
@@ -42,11 +39,11 @@ function Notepad({
                 key={index}
                 note={note}
                 noteIndex={index} 
-                notepadName={getNotepadName}
                 noteMove={noteMove}
+                onChangeNoteColor={onChangeNoteColor}
+                onRenameNote={onRenameNote}
                 onAddNote={onAddNote}
                 onCloseNote={onCloseNote}
-                onRenameNote={onRenameNote}
               />
             );
           })

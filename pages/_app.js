@@ -18,21 +18,11 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  const defaultNote = {name: 'Note', text: '', x: 600, y: 300, colour: 'blue'};
+  const defaultNote = {name: 'Note', text: '', x: 600, y: 300, color: 'blue'};
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
   const [notepadList, setNotepadList] = useState([  ]);
 
-  function updateNotePosition(noteIndex, posX, posY) {
-    let updatedNoteList = notepadList[currentNotepadIndex].notes.map((item, index) => {
-      if(noteIndex == index) {
-        item.x = posX;
-        item.y = posY;
-      }
-      return item;
-    });
-    return updatedNoteList;
-  }
-
+  
   function updateNotepadList(updatedNoteList) {
     let updatedNotepadList = notepadList.map((item, index) => {
       if(index == currentNotepadIndex) {
@@ -43,14 +33,6 @@ export default function MyApp({ Component, pageProps }) {
     });
     return updatedNotepadList;
   }
-
-  function handleNoteMove(noteIndex, posX, posY) {
-    let updatedNoteList = updateNotePosition(noteIndex, posX, posY);
-    let updatedNotepadList = updateNotepadList(updatedNoteList);
-
-    setNotepadList(updatedNotepadList);
-  }
-
   
   function onNewNotepad() {
     setNotepadList([...notepadList, defaultNotepad]);
@@ -79,6 +61,40 @@ export default function MyApp({ Component, pageProps }) {
     setNotepadList(newNotepadList);
   }
   
+  function updateNotePosition(noteIndex, posX, posY) {
+    let updatedNoteList = notepadList[currentNotepadIndex].notes.map((item, index) => {
+      if(noteIndex == index) {
+        item.x = posX;
+        item.y = posY;
+      }
+      return item;
+    });
+    return updatedNoteList;
+  }
+
+  function handleNoteMove(noteIndex, posX, posY) {
+    let updatedNoteList = updateNotePosition(noteIndex, posX, posY);
+    let updatedNotepadList = updateNotepadList(updatedNoteList);
+
+    setNotepadList(updatedNotepadList);
+  }
+
+  // return the array of notes with new color
+  function changeNoteColor(noteIndex, newColor) {
+    let newNotes = notepadList[currentNotepadIndex].notes.map((item, index) => {
+      if(noteIndex == index) 
+        item.color = newColor;
+      return item;
+    });
+    return newNotes;
+  }
+
+  function onChangeNoteColor(noteIndex, newColor) {
+    let newNotes = changeNoteColor(noteIndex, newColor);
+    let newNotepadList = updateNotepadList(newNotes);
+    setNotepadList(newNotepadList);
+  }
+
   // return list of notes with the renamed note
   function renameNote(noteIndex, newName) {
     let newNotes = notepadList[currentNotepadIndex].notes.map((note, index) => {
@@ -143,9 +159,10 @@ export default function MyApp({ Component, pageProps }) {
             notepadList={notepadList[currentNotepadIndex]}
             onNewNotepad={onNewNotepad}
             noteMove={handleNoteMove}
+            onChangeNoteColor={onChangeNoteColor}
+            onRenameNote={onRenameNote}
             onAddNote={onAddNote}
             onCloseNote={onCloseNote}
-            onRenameNote={onRenameNote}
           />
         </Layout>
       </ThemeProvider>
