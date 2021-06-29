@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Note from '../components/Note';
 import NewNotepadButton from '../components/NewNotepadButton';
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Notepad({ 
   noteMove,
-  notepadList, 
+  notepad, 
   onNewNotepad, 
   onCloseNote, 
   onAddNote ,
@@ -28,17 +29,25 @@ function Notepad({
 }) {
       
   const classes = useStyles();
+  const [selectedNote, setSelectedNote] = useState(0);
+
+  function handleSeletedNote(noteIndex) {
+    setSelectedNote(noteIndex);
+  }
 
   return(
     <div className={classes.container} >
         {
-          notepadList?.notes?.length === 0 ? 'Nenhum existe nenhum notepad' : 
-          notepadList?.notes?.map((note, index) => {
+          notepad?.notes?.length === 0 ? 'Nenhum existe nenhum notepad' : 
+          notepad?.notes?.map((note, index, length) => {
             return (
               <Note
                 key={index}
                 note={note}
-                noteIndex={index} 
+                noteIndex={index}
+                notepadLength={length.length} 
+                selectedNote={selectedNote}
+                setSelectedNote={handleSeletedNote}
                 noteMove={noteMove}
                 onChangeNoteColor={onChangeNoteColor}
                 onRenameNote={onRenameNote}

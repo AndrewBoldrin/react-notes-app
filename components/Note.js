@@ -63,7 +63,10 @@ export default function Note({
     onAddNote,
     onCloseNote,
     onRenameNote,
-    onChangeNoteColor
+    onChangeNoteColor,
+    selectedNote,
+    setSelectedNote,
+    notepadLength,
 }) {
 
     const [isDown, setIsDown] = useState(false);
@@ -81,6 +84,7 @@ export default function Note({
     useEffect(() => {
         document.addEventListener('mousemove', mousemove);
         document.addEventListener('mouseup', mouseup);
+        setSelectedNote(notepadLength);
 
         return () => {
             document.removeEventListener('mousemove', mousemove);
@@ -90,12 +94,15 @@ export default function Note({
 
     const mousemove = (e) => {
         if(isDown) {
+            if(selectedNote != noteIndex) 
+                setSelectedNote(noteIndex)
             let posX = e.clientX;
             let posY = e.clientY;
             let newPosX = posX - componentOffSetLeft;
             let newPosY = posY - componentOffSetTop;
 
-            noteMove(noteIndex, newPosX, newPosY);
+            if(newPosX > 305 && newPosY > 0) 
+                noteMove(noteIndex, newPosX, newPosY);
         }
     }
         
@@ -130,8 +137,25 @@ export default function Note({
         setTogglePalette(null);
     }
 
+    function handleNoteClick() {
+        setSelectedNote(noteIndex);
+    }
+
+    function handleAddNote() {
+        onAddNote();
+    }
+
     return (
-        <Card ref={noteRef} className={classes.card} style={{position: 'absolute', left: note.x + 'px', top: note.y + 'px'}}>
+        <Card 
+            ref={noteRef} 
+            className={classes.card} 
+            onClick={ handleNoteClick }
+            style={{
+                position: 'absolute', 
+                left: note.x + 'px',
+                top: note.y + 'px',
+                zIndex: selectedNote==noteIndex ? 2 : 1,
+            }}>
             <AppBar 
                 onMouseDown={() => handleMouseDown(event)} 
                 position="static"
@@ -195,7 +219,7 @@ export default function Note({
                             <EditIcon className={classes.icon} />
                         </IconButton>
                         <IconButton 
-                            onClick={ onAddNote } 
+                            onClick={ () => handleAddNote() } 
                             edge="end" 
                         >
                             <AddIcon  className={classes.icon}/>

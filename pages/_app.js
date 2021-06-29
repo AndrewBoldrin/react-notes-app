@@ -56,11 +56,11 @@ export default function MyApp({ Component, pageProps }) {
   function onDeleteNotepad(notepadIndex) {
     let newNotepadList = notepadList.filter((item, index) => {
       if(index !== notepadIndex) 
-      return item;
+        return item;
     });
     setNotepadList(newNotepadList);
   }
-  
+
   function updateNotePosition(noteIndex, posX, posY) {
     let updatedNoteList = notepadList[currentNotepadIndex].notes.map((item, index) => {
       if(noteIndex == index) {
@@ -142,7 +142,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <React.Fragment>
       <Head>
-        <title>My page</title>
+        <title>Notes App</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
@@ -156,7 +156,7 @@ export default function MyApp({ Component, pageProps }) {
           />
           <Component 
             {...pageProps}
-            notepadList={notepadList[currentNotepadIndex]}
+            notepad={notepadList[currentNotepadIndex]}
             onNewNotepad={onNewNotepad}
             noteMove={handleNoteMove}
             onChangeNoteColor={onChangeNoteColor}
