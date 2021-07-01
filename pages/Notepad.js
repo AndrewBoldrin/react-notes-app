@@ -25,7 +25,9 @@ function Notepad({
   onCloseNote, 
   onAddNote ,
   onRenameNote,
-  onChangeNoteColor
+  onChangeNoteColor,
+  handleChangeText,
+  handleChangeTextAreaSize
 }) {
       
   const classes = useStyles();
@@ -55,6 +57,8 @@ function Notepad({
                 onRenameNote={onRenameNote}
                 onAddNote={onAddNote}
                 onCloseNote={onCloseNote}
+                handleChangeText={handleChangeText}
+                handleChangeTextAreaSize={handleChangeTextAreaSize}
               />
             );
           })

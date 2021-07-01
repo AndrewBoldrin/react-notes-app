@@ -65,7 +65,9 @@ export default function Note({
     onChangeNoteColor,
     selectedNote,
     setSelectedNote,
-    lastSelectedNote
+    lastSelectedNote,
+    handleChangeText,
+    handleChangeTextAreaSize,
 }) {
 
     const [isDown, setIsDown] = useState(false);
@@ -75,6 +77,7 @@ export default function Note({
     const [newName, setNewName] = useState();
     const [togglePalette, setTogglePalette] = useState(null);
     const noteRef = useRef(null);
+    const textAreaRef = useRef(null);
     const classes = useStyles();
 
     const open = Boolean(togglePalette);
@@ -148,6 +151,18 @@ export default function Note({
     function handleCloseNote() {
         setSelectedNote(lastSelectedNote);
         onCloseNote(noteIndex);
+    }
+
+    function handleTextAreaChange(event) {
+        handleChangeText(noteIndex, event.target.value);
+        event.preventDefault();
+    }
+    
+    function handleTextAreaResize(event) {
+        let width = textAreaRef.current.style.width;
+        let height = textAreaRef.current.style.height;
+        handleChangeTextAreaSize(noteIndex, width, height);
+        event.preventDefault();
     }
 
     return (
@@ -241,10 +256,19 @@ export default function Note({
             <CardActionArea>
                 <CardContent>
                     <TextareaAutosize 
+                        ref={ textAreaRef }
                         className={classes.textArea} 
+                        style= {{ 
+                            width: note.width, 
+                            height: note.height 
+                        }}
+                        height={note.height}
                         aria-label="empty textarea" 
                         placeholder="Empty" 
                         onClick={ () => handleTextAreaClick() }
+                        onChange={ () => handleTextAreaChange(event) }
+                        onMouseUp={ () => handleTextAreaResize(event) }
+                        value = { note.text }
                     />;
                 </CardContent>
             </CardActionArea>

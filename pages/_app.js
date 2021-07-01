@@ -20,18 +20,25 @@ export default function MyApp({ Component, pageProps }) {
   const initialNoteXPos = 310;
   const initialNoteYPos = 10;
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  const defaultNote = {name: 'Note', text: '', x: initialNoteXPos, y: initialNoteYPos, color: 'blue'};
+  const defaultNote = {
+    name: 'Note', 
+    text: '', 
+    x: initialNoteXPos, 
+    y: initialNoteYPos, 
+    width: 100,
+    heihgt: 100,
+    color: 'blue'
+  };
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
   const [notepadList, setNotepadList] = useState([  ]);
 
   
   function updateNotepadList(updatedNoteList) {
-    let updatedNotepadList = notepadList.map((item, index) => {
+    let updatedNotepadList = notepadList.map((notepad, index) => {
       if(index == currentNotepadIndex) {
-        let changedNotepad = {name: item.name, notes: updatedNoteList};
-        return changedNotepad;
+        notepad.notes = updatedNoteList;
       }
-      return item;
+      return notepad;
     });
     return updatedNotepadList;
   }
@@ -123,6 +130,38 @@ export default function MyApp({ Component, pageProps }) {
     return newNotesList;
   }
 
+  function changeNoteText(noteIndex, text) {
+    let newNotes = notepadList[currentNotepadIndex].notes.map((note, index) => {
+      if(noteIndex == index)
+        note.text = text;
+      return note;
+    });
+    return newNotes;
+  }
+
+  function handleChangeText(noteIndex, text) {
+    let newNotes = changeNoteText(noteIndex, text);
+    let newNotepadList = updateNotepadList(newNotes);
+    setNotepadList(newNotepadList);
+  }
+
+  function changeTextAreaSize(noteIndex, noteWidth, noteHeight) {
+    let newNotes = notepadList[currentNotepadIndex].notes.map((note, index) => {
+      if(noteIndex == index) {
+        note.width = noteWidth;
+        note.height = noteHeight;
+      }
+      return note;
+    });
+    return newNotes;
+  }
+
+  function handleChangeTextAreaSize(noteIndex, noteWidth, noteHeight) {
+    let newNotes = changeTextAreaSize(noteIndex, noteWidth, noteHeight);
+    let newNotepadList = updateNotepadList(newNotes);
+    setNotepadList(newNotepadList);
+  }
+
   function getNewNotePos() {
     let fittingNumber = Math.trunc((document.documentElement.clientWidth - 310) / 310); 
     let notesLength = notepadList[currentNotepadIndex].notes.length;
@@ -136,7 +175,7 @@ export default function MyApp({ Component, pageProps }) {
 
   function onAddNote() {
     let newPos = getNewNotePos();
-    let newNote = {name: 'Note', text: '', x: newPos.x, y: newPos.y, color: 'blue'};
+    let newNote = {name: 'Note', text: '', x: newPos.x, y: newPos.y, color: 'blue', width: 300, height: 300};
     let newNotepadList = notepadList.map((item, index) => {
       if(index == currentNotepadIndex)
         item.notes.push(newNote);
@@ -178,6 +217,8 @@ export default function MyApp({ Component, pageProps }) {
             onRenameNote={onRenameNote}
             onAddNote={onAddNote}
             onCloseNote={onCloseNote}
+            handleChangeText={handleChangeText}
+            handleChangeTextAreaSize={handleChangeTextAreaSize}
           />
         </Layout>
       </ThemeProvider>
