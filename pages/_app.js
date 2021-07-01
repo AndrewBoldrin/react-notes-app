@@ -17,8 +17,10 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, []);
   
+  const initialNoteXPos = 310;
+  const initialNoteYPos = 10;
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
-  const defaultNote = {name: 'Note', text: '', x: 600, y: 300, color: 'blue'};
+  const defaultNote = {name: 'Note', text: '', x: initialNoteXPos, y: initialNoteYPos, color: 'blue'};
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
   const [notepadList, setNotepadList] = useState([  ]);
 
@@ -121,10 +123,23 @@ export default function MyApp({ Component, pageProps }) {
     return newNotesList;
   }
 
+  function getNewNotePos() {
+    let fittingNumber = Math.trunc((document.documentElement.clientWidth - 310) / 310); 
+    let notesLength = notepadList[currentNotepadIndex].notes.length;
+    let yLine = Math.trunc(notesLength / fittingNumber);
+
+    let newPosX = initialNoteXPos + (340 * (notesLength - (fittingNumber * yLine)));
+    let newPosY = initialNoteYPos + ((310 * Math.trunc(yLine)) );
+
+    return {x: newPosX, y: newPosY};
+  }
+
   function onAddNote() {
+    let newPos = getNewNotePos();
+    let newNote = {name: 'Note', text: '', x: newPos.x, y: newPos.y, color: 'blue'};
     let newNotepadList = notepadList.map((item, index) => {
-      if(index == currentNotepadIndex) 
-        item.notes.push(defaultNote);
+      if(index == currentNotepadIndex)
+        item.notes.push(newNote);
       return item;
     })
     setNotepadList(newNotepadList);

@@ -10,6 +10,7 @@ export default function NewNotepadButton({ onNewNotepad }) {
             position: 'absolute',
             bottom: '50px',
             right: '50px',
+            zIndex: 3,
         },
     }));
 

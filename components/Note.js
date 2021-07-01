@@ -10,7 +10,6 @@ import {
     CardActionArea, 
     CardContent, 
     ListItem, 
-    ButtonGroup,
     AppBar,
     TextareaAutosize,
     ListItemText,
@@ -52,7 +51,7 @@ const useStyles = makeStyles({
         display: 'flex', 
         minWidth: 150, 
         maxWidth: 150,
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
   });
 
@@ -66,7 +65,7 @@ export default function Note({
     onChangeNoteColor,
     selectedNote,
     setSelectedNote,
-    notepadLength,
+    lastSelectedNote
 }) {
 
     const [isDown, setIsDown] = useState(false);
@@ -84,7 +83,9 @@ export default function Note({
     useEffect(() => {
         document.addEventListener('mousemove', mousemove);
         document.addEventListener('mouseup', mouseup);
-        setSelectedNote(notepadLength);
+        if(selectedNote != noteIndex) {
+            setSelectedNote(noteIndex);
+        }
 
         return () => {
             document.removeEventListener('mousemove', mousemove);
@@ -94,8 +95,6 @@ export default function Note({
 
     const mousemove = (e) => {
         if(isDown) {
-            if(selectedNote != noteIndex) 
-                setSelectedNote(noteIndex)
             let posX = e.clientX;
             let posY = e.clientY;
             let newPosX = posX - componentOffSetLeft;
@@ -137,19 +136,24 @@ export default function Note({
         setTogglePalette(null);
     }
 
-    function handleNoteClick() {
-        setSelectedNote(noteIndex);
-    }
-
     function handleAddNote() {
         onAddNote();
+    }
+
+    function handleTextAreaClick() {
+        if(selectedNote != noteIndex)
+            setSelectedNote(noteIndex);
+    }
+
+    function handleCloseNote() {
+        setSelectedNote(lastSelectedNote);
+        onCloseNote(noteIndex);
     }
 
     return (
         <Card 
             ref={noteRef} 
             className={classes.card} 
-            onClick={ handleNoteClick }
             style={{
                 position: 'absolute', 
                 left: note.x + 'px',
@@ -182,55 +186,56 @@ export default function Note({
                         :
                         <ListItemText >{note.name}</ListItemText>
                     }
-                    <ButtonGroup>
-                        <IconButton 
-                            edge="end" 
-                            aria-label="edit" 
-                            onClick={ (event) => handleTogglePalette(event)}
-                        >
-                            <PaletteIcon className={classes.icon} />
-                        </IconButton>
+                    <IconButton 
+                        edge="end" 
+                        aria-label="edit" 
+                        onClick={ (event) => handleTogglePalette(event)}
+                    >
+                        <PaletteIcon className={classes.icon} />
+                    </IconButton>
 
-                        <Popper 
-                            open={open} 
-                            anchorEl={togglePalette}
-                            placement="top"
+                    <Popper 
+                        open={open} 
+                        anchorEl={togglePalette}
+                        placement="top"
+                        style={{ zIndex: selectedNote==noteIndex ? 2 : 1, }}
+                    >
+                        <Paper 
+                            className={classes.paperContainer }
                         >
-                            <Paper className={classes.paperContainer }>
-                                { paletteColors.map((color) => {
-                                    return (
-                                        <IconButton 
-                                            key={ color.toString() } 
-                                            value={ color }
-                                            onClick={ () => handleChangeNoteColor(color) }
-                                        >
-                                            <Brightness1Icon style={{ color: color }}/>
-                                        </IconButton>
-                                    );
-                                })}
-                            </Paper>
-                        </Popper>
+                            { paletteColors.map((color) => {
+                                return (
+                                    <IconButton 
+                                        key={ color.toString() } 
+                                        value={ color }
+                                        onClick={ () => handleChangeNoteColor(color) }
+                                    >
+                                        <Brightness1Icon style={{ color: color }}/>
+                                    </IconButton>
+                                );
+                            })}
+                        </Paper>
+                    </Popper>
 
-                        <IconButton 
-                            onClick={ () => handleEditClick() }
-                            aria-label="edit"
-                            edge="end"
-                        >
-                            <EditIcon className={classes.icon} />
-                        </IconButton>
-                        <IconButton 
-                            onClick={ () => handleAddNote() } 
-                            edge="end" 
-                        >
-                            <AddIcon  className={classes.icon}/>
-                        </IconButton>
-                        <IconButton 
-                            onClick={ () => onCloseNote(noteIndex) } 
-                            edge="end" 
-                        >
-                            <CloseIcon className={classes.icon} />
-                        </IconButton>
-                    </ButtonGroup>
+                    <IconButton 
+                        onClick={ () => handleEditClick() }
+                        aria-label="edit"
+                        edge="end"
+                    >
+                        <EditIcon className={classes.icon} />
+                    </IconButton>
+                    <IconButton 
+                        onClick={ () => handleAddNote() } 
+                        edge="end" 
+                    >
+                        <AddIcon  className={classes.icon}/>
+                    </IconButton>
+                    <IconButton 
+                        onClick={ () => handleCloseNote() } 
+                        edge="end" 
+                    >
+                        <CloseIcon className={classes.icon} />
+                    </IconButton>
                 </ListItem>
             </AppBar>
             <CardActionArea>
@@ -239,6 +244,7 @@ export default function Note({
                         className={classes.textArea} 
                         aria-label="empty textarea" 
                         placeholder="Empty" 
+                        onClick={ () => handleTextAreaClick() }
                     />;
                 </CardContent>
             </CardActionArea>

@@ -6,8 +6,8 @@ import NewNotepadButton from '../components/NewNotepadButton';
 const useStyles = makeStyles((theme) => ({
     container: {
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexWrap: 'wrap',
+      maxWidth: '100vw',
       minHeight: '100vh',
     },
 
@@ -30,8 +30,10 @@ function Notepad({
       
   const classes = useStyles();
   const [selectedNote, setSelectedNote] = useState(0);
+  const [lastSelectedNote, setLastSelectedNote] = useState(0);
 
   function handleSeletedNote(noteIndex) {
+    setLastSelectedNote(selectedNote);
     setSelectedNote(noteIndex);
   }
 
@@ -39,15 +41,15 @@ function Notepad({
     <div className={classes.container} >
         {
           notepad?.notes?.length === 0 ? 'Nenhum existe nenhum notepad' : 
-          notepad?.notes?.map((note, index, length) => {
+          notepad?.notes?.map((note, index) => {
             return (
               <Note
                 key={index}
                 note={note}
                 noteIndex={index}
-                notepadLength={length.length} 
                 selectedNote={selectedNote}
                 setSelectedNote={handleSeletedNote}
+                lastSelectedNote={lastSelectedNote}
                 noteMove={noteMove}
                 onChangeNoteColor={onChangeNoteColor}
                 onRenameNote={onRenameNote}
