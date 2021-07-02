@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import SideBar from '../components/SideBar';
 import Layout from '../components/layout/Layout';
 import '../styles/globals.css';
@@ -9,14 +10,7 @@ import theme from '../styles/theme';
 
 export default function MyApp({ Component, pageProps }) {
 
-  React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
-  
+  const router = useRouter();
   const initialNoteXPos = 310;
   const initialNoteYPos = 10;
   const [currentNotepadIndex, setCurrentNotepadIndex] = useState(0);
@@ -30,8 +24,25 @@ export default function MyApp({ Component, pageProps }) {
     color: 'blue'
   };
   const defaultNotepad = {name: 'untitled', notes: [ defaultNote ]};
-  const [notepadList, setNotepadList] = useState([  ]);
+  const windowGlobal = typeof window !== 'undefined' && window;
+  const [mounted, setMounted] = useState(false);
 
+  const [notepadList, setNotepadList] = useState(
+    windowGlobal ? JSON.parse(windowGlobal.localStorage.localNotepadList) : []
+  );
+  
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    windowGlobal.localStorage.setItem("localNotepadList", JSON.stringify(notepadList));
+  }, [notepadList]);
   
   function updateNotepadList(updatedNoteList) {
     let updatedNotepadList = notepadList.map((notepad, index) => {
@@ -50,6 +61,8 @@ export default function MyApp({ Component, pageProps }) {
   
   function changeActiveNotepad(index) {
     setCurrentNotepadIndex(index);
+    if(notepadList) 
+      router.push('/Notepad', undefined, { shallow: true });
   }
   
   function onEditNotepadName(text, notepadIndex) {
@@ -194,6 +207,7 @@ export default function MyApp({ Component, pageProps }) {
   }
 
   return (
+    mounted &&
     <React.Fragment>
       <Head>
         <title>Notes App</title>
@@ -225,5 +239,3 @@ export default function MyApp({ Component, pageProps }) {
     </React.Fragment>
   );
 }
-
-// export default MyApp;
